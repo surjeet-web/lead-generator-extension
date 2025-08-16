@@ -29,6 +29,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const leadsCountSpan = document.getElementById('leads-count');
   const clearLeadsBtn = document.getElementById('clear-leads-btn');
   const exportCsvBtn = document.getElementById('export-csv-btn');
+  const exportJsonBtn = document.getElementById('export-json-btn');
+  const exportTxtBtn = document.getElementById('export-txt-btn');
 
   // --- INITIALIZATION ---
   async function init() {
@@ -71,7 +73,9 @@ document.addEventListener('DOMContentLoaded', () => {
     startCrawlBtn.addEventListener('click', handleStartCrawl);
     clearQueueBtn.addEventListener('click', handleClearQueue);
     clearLeadsBtn.addEventListener('click', handleClearLeads);
-    exportCsvBtn.addEventListener('click', handleExportCSV);
+    exportCsvBtn.addEventListener('click', () => handleExport('csv'));
+    exportJsonBtn.addEventListener('click', () => handleExport('json'));
+    exportTxtBtn.addEventListener('click', () => handleExport('txt'));
   }
 
   function setupChromeListeners() {
@@ -179,16 +183,24 @@ document.addEventListener('DOMContentLoaded', () => {
     leadsCountSpan.textContent = leads.length;
     const sortedLeads = [...leads].sort((a, b) => b.score - a.score);
     if (sortedLeads.length === 0) {
-      leadsTableBody.innerHTML = '<tr><td colspan="3" style="text-align: center; padding: 24px;">No leads found yet.</td></tr>';
+      leadsTableBody.innerHTML = '<tr><td colspan="4" style="text-align: center; padding: 24px;">No leads found yet.</td></tr>';
     } else {
       sortedLeads.forEach(lead => {
         const tr = document.createElement('tr');
-        tr.innerHTML = `<td>${lead.email}</td><td>${lead.score}</td><td><a href="${lead.sourceUrl}" target="_blank" title="${lead.sourceUrl}">${lead.sourceUrl}</a></td>`;
+        tr.innerHTML = `
+          <td>${lead.type}</td>
+          <td>${lead.value}</td>
+          <td>${lead.type === 'email' ? lead.score : '-'}</td>
+          <td><a href="${lead.sourceUrl}" target="_blank" title="${lead.sourceUrl}">${lead.sourceUrl}</a></td>
+        `;
         leadsTableBody.appendChild(tr);
       });
     }
-    clearLeadsBtn.disabled = leads.length === 0;
-    exportCsvBtn.disabled = leads.length === 0;
+    const hasLeads = leads.length > 0;
+    clearLeadsBtn.disabled = !hasLeads;
+    exportCsvBtn.disabled = !hasLeads;
+    exportJsonBtn.disabled = !hasLeads;
+    exportTxtBtn.disabled = !hasLeads;
   }
 
   function updateCrawlStatusUI() {
@@ -245,21 +257,40 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  function handleExportCSV() {
+  function handleExport(format) {
     if (leads.length === 0) return;
-    const headers = Object.keys(leads[0]);
-    const csvRows = [
-      headers.join(','),
-      ...leads.map(row =>
-        headers.map(header => `"${String(row[header]).replace(/"/g, '""')}"`).join(',')
-      )
-    ];
-    const csvContent = csvRows.join('\n');
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    let content = '';
+    let mimeType = '';
+    let filename = '';
+
+    if (format === 'csv') {
+      const headers = Object.keys(leads[0]);
+      const csvRows = [
+        headers.join(','),
+        ...leads.map(row =>
+          headers.map(header => `"${String(row[header]).replace(/"/g, '""')}"`).join(',')
+        )
+      ];
+      content = csvRows.join('\n');
+      mimeType = 'text/csv;charset=utf-8;';
+      filename = 'leads.csv';
+    } else if (format === 'json') {
+      content = JSON.stringify(leads, null, 2);
+      mimeType = 'application/json;charset=utf-8;';
+      filename = 'leads.json';
+    } else if (format === 'txt') {
+      content = leads.map(lead => 
+        `${lead.type.toUpperCase()}: ${lead.value} (found on ${lead.sourceUrl})`
+      ).join('\n');
+      mimeType = 'text/plain;charset=utf-8;';
+      filename = 'leads.txt';
+    }
+
+    const blob = new Blob([content], { type: mimeType });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.setAttribute('href', url);
-    link.setAttribute('download', 'leads.csv');
+    link.setAttribute('download', filename);
     link.click();
   }
 

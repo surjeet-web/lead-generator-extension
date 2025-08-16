@@ -114,7 +114,7 @@ function handleExtractedLeads(leads) {
   chrome.storage.local.get({ leads: [] }, (data) => {
     const existingLeads = data.leads;
     const newLeads = leads.filter(
-      (newLead) => !existingLeads.some((existing) => existing.email === newLead.email)
+      (newLead) => !existingLeads.some((existing) => existing.value === newLead.value && existing.type === newLead.type)
     );
     if (newLeads.length > 0) {
       const updatedLeads = [...existingLeads, ...newLeads];
