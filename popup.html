@@ -113,6 +113,21 @@
           </table>
         </div>
       </section>
+
+      <section class="card">
+        <h2>Icon Generator</h2>
+        <p class="description">Paste SVG code below to generate and set a new extension icon.</p>
+        <div class="icon-generator-container">
+          <textarea id="svg-input" rows="5" placeholder="<svg>...</svg>"></textarea>
+          <div class="icon-preview-container">
+            <p>Preview:</p>
+            <img id="icon-preview" src="assets/icon.png" alt="Icon Preview" width="48" height="48">
+          </div>
+        </div>
+        <div class="actions">
+          <button id="generate-icon-btn">Generate & Set Icon</button>
+        </div>
+      </section>
     </main>
     <footer>
       <p>Lead Generator v0.1.0</p>

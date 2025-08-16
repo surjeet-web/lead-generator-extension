@@ -18,7 +18,6 @@ document.addEventListener('DOMContentLoaded', () => {
     platform: document.getElementById('platform-filter'),
   };
   const queriesContainer = document.getElementById('queries-container');
-  const openTop5Btn = document.getElementById('open-top-5-btn');
   const queueForCrawlBtn = document.getElementById('queue-for-crawl-btn');
   
   const customQueryInput = document.getElementById('custom-query-input');
@@ -43,6 +42,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const exportJsonBtn = document.getElementById('export-json-btn');
   const exportTxtBtn = document.getElementById('export-txt-btn');
 
+  const svgInput = document.getElementById('svg-input');
+  const iconPreview = document.getElementById('icon-preview');
+  const generateIconBtn = document.getElementById('generate-icon-btn');
+
   // --- INITIALIZATION ---
   async function init() {
     await loadTemplates();
@@ -54,6 +57,7 @@ document.addEventListener('DOMContentLoaded', () => {
     renderLeadsTable();
     renderSettings();
     updateCrawlStatusUI();
+    loadCustomIcon();
 
     setupEventListeners();
     setupChromeListeners();
@@ -79,9 +83,17 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  function loadCustomIcon() {
+    chrome.storage.local.get('customIconSvg', (data) => {
+      if (data.customIconSvg) {
+        svgInput.value = data.customIconSvg;
+        updateIconPreview(data.customIconSvg);
+      }
+    });
+  }
+
   function setupEventListeners() {
     Object.values(filters).forEach(select => select.addEventListener('change', applyFiltersAndRender));
-    openTop5Btn.addEventListener('click', handleOpenTop5);
     queueForCrawlBtn.addEventListener('click', handleQueueForCrawl);
     addCustomQueryBtn.addEventListener('click', handleAddCustomQuery);
     startCrawlBtn.addEventListener('click', handleStartCrawl);
@@ -92,6 +104,8 @@ document.addEventListener('DOMContentLoaded', () => {
     exportJsonBtn.addEventListener('click', () => handleExport('json'));
     exportTxtBtn.addEventListener('click', () => handleExport('txt'));
     leadsTableBody.addEventListener('click', handleDeleteLead);
+    generateIconBtn.addEventListener('click', handleGenerateIcon);
+    svgInput.addEventListener('input', () => updateIconPreview(svgInput.value));
   }
 
   function setupChromeListeners() {
@@ -178,7 +192,6 @@ document.addEventListener('DOMContentLoaded', () => {
         queriesContainer.appendChild(div);
       });
     }
-    openTop5Btn.disabled = filteredTemplates.length === 0;
     queueForCrawlBtn.disabled = filteredTemplates.length === 0;
   }
 
@@ -250,6 +263,8 @@ document.addEventListener('DOMContentLoaded', () => {
     crawlDepthSelect.disabled = isCrawling;
     addCustomQueryBtn.disabled = isCrawling;
     customQueryInput.disabled = isCrawling;
+    generateIconBtn.disabled = isCrawling;
+    svgInput.disabled = isCrawling;
   }
 
   // --- HANDLER FUNCTIONS ---
@@ -262,13 +277,6 @@ document.addEventListener('DOMContentLoaded', () => {
       setTimeout(() => {
         saveSettingsBtn.textContent = originalText;
       }, 1500);
-    });
-  }
-
-  function handleOpenTop5() {
-    filteredTemplates.slice(0, 5).forEach(template => {
-      const searchUrl = `https://www.google.com/search?q=${encodeURIComponent(template.query)}`;
-      chrome.tabs.create({ url: searchUrl });
     });
   }
 
@@ -355,6 +363,46 @@ document.addEventListener('DOMContentLoaded', () => {
     link.setAttribute('href', url);
     link.setAttribute('download', filename);
     link.click();
+  }
+
+  function updateIconPreview(svgText) {
+    if (!svgText || !svgText.trim().startsWith('<svg')) {
+      iconPreview.src = 'assets/icon.png'; // fallback to default
+      return;
+    }
+    const blob = new Blob([svgText], { type: 'image/svg+xml' });
+    const url = URL.createObjectURL(blob);
+    iconPreview.src = url;
+  }
+
+  function handleGenerateIcon() {
+    const svgText = svgInput.value;
+    if (!svgText) return;
+
+    const canvas = document.createElement('canvas');
+    canvas.width = 128;
+    canvas.height = 128;
+    const ctx = canvas.getContext('2d');
+    const img = new Image();
+
+    img.onload = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      
+      chrome.action.setIcon({ imageData: imageData });
+      chrome.storage.local.set({ customIconSvg: svgText }, () => {
+        const originalText = generateIconBtn.textContent;
+        generateIconBtn.textContent = 'Icon Set!';
+        setTimeout(() => {
+          generateIconBtn.textContent = originalText;
+        }, 1500);
+      });
+    };
+    
+    const blob = new Blob([svgText], { type: 'image/svg+xml' });
+    const url = URL.createObjectURL(blob);
+    img.src = url;
   }
 
   init();
