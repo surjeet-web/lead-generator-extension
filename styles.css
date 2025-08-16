@@ -59,6 +59,7 @@ button.danger { background-color: var(--danger-color); color: #fff; }
 @keyframes pulse { 50% { opacity: .5; } }
 .header-actions { display: flex; justify-content: space-between; align-items: center; }
 .header-actions .actions { margin-top: 0; }
+.leads-filter-container { margin: 12px 0; }
 .table-container { border: 1px solid var(--border-color); border-radius: 8px; max-height: 400px; overflow-y: auto; }
 table { width: 100%; border-collapse: collapse; }
 th, td { padding: 12px; text-align: left; border-bottom: 1px solid var(--border-color); font-size: 14px; }

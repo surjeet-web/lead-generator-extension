@@ -35,6 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const crawlStatusContainer = document.getElementById('crawl-status-container');
   const crawlProgressText = document.getElementById('crawl-progress-text');
 
+  const leadsFilterInput = document.getElementById('leads-filter-input');
   const leadsTableBody = document.getElementById('leads-table-body');
   const leadsCountSpan = document.getElementById('leads-count');
   const clearLeadsBtn = document.getElementById('clear-leads-btn');
@@ -103,6 +104,7 @@ document.addEventListener('DOMContentLoaded', () => {
     exportCsvBtn.addEventListener('click', () => handleExport('csv'));
     exportJsonBtn.addEventListener('click', () => handleExport('json'));
     exportTxtBtn.addEventListener('click', () => handleExport('txt'));
+    leadsFilterInput.addEventListener('input', renderLeadsTable);
     leadsTableBody.addEventListener('click', handleDeleteLead);
     generateIconBtn.addEventListener('click', handleGenerateIcon);
     svgInput.addEventListener('input', () => updateIconPreview(svgInput.value));
@@ -219,9 +221,23 @@ document.addEventListener('DOMContentLoaded', () => {
   function renderLeadsTable() {
     leadsTableBody.innerHTML = '';
     leadsCountSpan.textContent = leads.length;
-    const sortedLeads = [...leads].sort((a, b) => b.score - a.score);
+
+    const filterText = (leadsFilterInput ? leadsFilterInput.value : '').toLowerCase();
+    
+    const filteredLeads = leads.filter(lead => {
+      if (!filterText) return true;
+      return (
+        lead.value.toLowerCase().includes(filterText) ||
+        lead.type.toLowerCase().includes(filterText) ||
+        lead.sourceUrl.toLowerCase().includes(filterText)
+      );
+    });
+
+    const sortedLeads = [...filteredLeads].sort((a, b) => b.score - a.score);
+    
     if (sortedLeads.length === 0) {
-      leadsTableBody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 24px;">No leads found yet.</td></tr>';
+      const message = leads.length > 0 ? 'No leads match your filter.' : 'No leads found yet.';
+      leadsTableBody.innerHTML = `<tr><td colspan="6" style="text-align: center; padding: 24px;">${message}</td></tr>`;
     } else {
       sortedLeads.forEach(lead => {
         const tr = document.createElement('tr');
