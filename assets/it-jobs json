@@ -1,0 +1,461 @@
+[
+  {
+    "category": "Country-Wide Job Search",
+    "sector": "Technology",
+    "role": "Software Engineer",
+    "location": "India",
+    "platform": "naukri",
+    "query": "site:naukri.com \"software engineer\" \"India\" \"2025\" \"IT services\"",
+    "intent_note": "Find software engineering positions across India's IT sector"
+  },
+  {
+    "category": "Country-Wide Job Search",
+    "sector": "Technology",
+    "role": "Data Scientist",
+    "location": "United States",
+    "platform": "indeed",
+    "query": "site:indeed.com \"data scientist\" \"United States\" \"remote\" \"2025\"",
+    "intent_note": "Discover remote data science opportunities across the US"
+  },
+  {
+    "category": "Country-Wide Job Search",
+    "sector": "Technology",
+    "role": "DevOps Engineer",
+    "location": "Canada",
+    "platform": "linkedin",
+    "query": "site:linkedin.com/jobs \"DevOps engineer\" \"Canada\" \"visa sponsorship\" \"2025\"",
+    "intent_note": "Find DevOps roles in Canada offering visa sponsorship"
+  },
+  {
+    "category": "IT Hub Specific",
+    "sector": "Technology",
+    "role": "Full Stack Developer",
+    "location": "Bangalore - Electronics City",
+    "platform": "linkedin",
+    "query": "site:linkedin.com/jobs \"full stack developer\" \"Electronics City\" \"Bangalore\" \"MNC\" \"2025\"",
+    "intent_note": "Target full stack development roles in Bangalore's Electronics City tech park"
+  },
+  {
+    "category": "IT Hub Specific",
+    "sector": "Technology",
+    "role": "Cloud Engineer",
+    "location": "Bangalore - Whitefield",
+    "platform": "naukri",
+    "query": "site:naukri.com \"cloud engineer\" \"Whitefield\" \"Bangalore\" \"AWS\" \"Azure\" \"2025\"",
+    "intent_note": "Find cloud engineering positions in Whitefield's ITPL tech park"
+  },
+  {
+    "category": "IT Hub Specific",
+    "sector": "Technology",
+    "role": "Product Manager",
+    "location": "Bangalore - Manyata Tech Park",
+    "platform": "instahyre",
+    "query": "site:instahyre.com \"product manager\" \"Manyata Tech Park\" \"Bangalore\" \"product company\" \"2025\"",
+    "intent_note": "Discover product management roles in Manyata Embassy Business Park"
+  },
+  {
+    "category": "IT Hub Specific",
+    "sector": "Technology",
+    "role": "UI/UX Designer",
+    "location": "Bangalore - RMZ Ecoworld",
+    "platform": "linkedin",
+    "query": "site:linkedin.com/jobs \"UI/UX designer\" \"RMZ Ecoworld\" \"Bangalore\" \"design\" \"2025\"",
+    "intent_note": "Target design roles in RMZ Ecoworld tech park"
+  },
+  {
+    "category": "IT Hub Specific",
+    "sector": "Technology",
+    "role": "Data Engineer",
+    "location": "Hyderabad - HITEC City",
+    "platform": "naukri",
+    "query": "site:naukri.com \"data engineer\" \"HITEC City\" \"Hyderabad\" \"big data\" \"2025\"",
+    "intent_note": "Find data engineering positions in Hyderabad's HITEC City"
+  },
+  {
+    "category": "IT Hub Specific",
+    "sector": "Technology",
+    "role": "Machine Learning Engineer",
+    "location": "Hyderabad - Gachibowli",
+    "platform": "linkedin",
+    "query": "site:linkedin.com/jobs \"machine learning engineer\" \"Gachibowli\" \"Hyderabad\" \"AI\" \"2025\"",
+    "intent_note": "Discover ML engineering roles in Gachibowli tech hub"
+  },
+  {
+    "category": "IT Hub Specific",
+    "sector": "Technology",
+    "role": "Backend Developer",
+    "location": "Hyderabad - Madhapur",
+    "platform": "cutshort",
+    "query": "site:cutshort.io \"backend developer\" \"Madhapur\" \"Hyderabad\" \"startup\" \"2025\"",
+    "intent_note": "Target backend development roles in Madhapur's startup ecosystem"
+  },
+  {
+    "category": "IT Hub Specific",
+    "sector": "Technology",
+    "role": "Software Architect",
+    "location": "Pune - Hinjawadi",
+    "platform": "naukri",
+    "query": "site:naukri.com \"software architect\" \"Hinjawadi\" \"Pune\" \"enterprise\" \"2025\"",
+    "intent_note": "Find software architecture positions in Pune's Hinjawadi IT park"
+  },
+  {
+    "category": "IT Hub Specific",
+    "sector": "Technology",
+    "role": "Business Analyst",
+    "location": "Pune - Magarpatta City",
+    "platform": "linkedin",
+    "query": "site:linkedin.com/jobs \"business analyst\" \"Magarpatta City\" \"Pune\" \"IT\" \"2025\"",
+    "intent_note": "Discover business analyst roles in Magarpatta City tech park"
+  },
+  {
+    "category": "IT Hub Specific",
+    "sector": "Technology",
+    "role": "QA Engineer",
+    "location": "Pune - Kharadi",
+    "platform": "naukri",
+    "query": "site:naukri.com \"QA engineer\" \"Kharadi\" \"Pune\" \"automation\" \"2025\"",
+    "intent_note": "Target QA engineering positions in Pune's Kharadi tech hub"
+  },
+  {
+    "category": "IT Hub Specific",
+    "sector": "Technology",
+    "role": "Network Engineer",
+    "location": "Chennai - TIDEL Park",
+    "platform": "linkedin",
+    "query": "site:linkedin.com/jobs \"network engineer\" \"TIDEL Park\" \"Chennai\" \"Cisco\" \"2025\"",
+    "intent_note": "Find network engineering roles in Chennai's TIDEL Park"
+  },
+  {
+    "category": "IT Hub Specific",
+    "sector": "Technology",
+    "role": "Frontend Developer",
+    "location": "Chennai - Siruseri",
+    "platform": "naukri",
+    "query": "site:naukri.com \"frontend developer\" \"Siruseri\" \"Chennai\" \"React\" \"2025\"",
+    "intent_note": "Discover frontend development positions in Chennai's SIPCOT IT Park"
+  },
+  {
+    "category": "IT Hub Specific",
+    "sector": "Technology",
+    "role": "Cybersecurity Analyst",
+    "location": "Delhi-NCR - Gurgaon",
+    "platform": "linkedin",
+    "query": "site:linkedin.com/jobs \"cybersecurity analyst\" \"Gurgaon\" \"Delhi-NCR\" \"infosec\" \"2025\"",
+    "intent_note": "Target cybersecurity roles in Gurgaon's CyberHub"
+  },
+  {
+    "category": "IT Hub Specific",
+    "sector": "Technology",
+    "role": "Mobile App Developer",
+    "location": "Delhi-NCR - Noida",
+    "platform": "naukri",
+    "query": "site:naukri.com \"mobile app developer\" \"Noida\" \"Delhi-NCR\" \"iOS\" \"Android\" \"2025\"",
+    "intent_note": "Find mobile app development positions in Noida's SEZ"
+  },
+  {
+    "category": "IT Hub Specific",
+    "sector": "Technology",
+    "role": "Software Engineer",
+    "location": "Silicon Valley - Palo Alto",
+    "platform": "linkedin",
+    "query": "site:linkedin.com/jobs \"software engineer\" \"Palo Alto\" \"Silicon Valley\" \"FAANG\" \"2025\"",
+    "intent_note": "Discover software engineering roles in Palo Alto's tech hub"
+  },
+  {
+    "category": "IT Hub Specific",
+    "sector": "Technology",
+    "role": "Data Scientist",
+    "location": "Silicon Valley - Mountain View",
+    "platform": "indeed",
+    "query": "site:indeed.com \"data scientist\" \"Mountain View\" \"Silicon Valley\" \"Google\" \"2025\"",
+    "intent_note": "Target data science positions in Mountain View's tech corridor"
+  },
+  {
+    "category": "IT Hub Specific",
+    "sector": "Technology",
+    "role": "Product Manager",
+    "location": "Silicon Valley - San Francisco",
+    "platform": "linkedin",
+    "query": "site:linkedin.com/jobs \"product manager\" \"San Francisco\" \"Silicon Valley\" \"startup\" \"2025\"",
+    "intent_note": "Find product management roles in San Francisco's startup ecosystem"
+  },
+  {
+    "category": "Company Specific",
+    "sector": "Technology",
+    "role": "Software Engineer",
+    "location": "Bangalore - Google",
+    "platform": "linkedin",
+    "query": "site:linkedin.com/jobs \"software engineer\" \"Google\" \"Bangalore\" \"2025\"",
+    "intent_note": "Target software engineering positions at Google's Bangalore campus"
+  },
+  {
+    "category": "Company Specific",
+    "sector": "Technology",
+    "role": "Cloud Engineer",
+    "location": "Bangalore - Amazon",
+    "platform": "naukri",
+    "query": "site:naukri.com \"cloud engineer\" \"Amazon\" \"Bangalore\" \"AWS\" \"2025\"",
+    "intent_note": "Find cloud engineering roles at Amazon's Bangalore office"
+  },
+  {
+    "category": "Company Specific",
+    "sector": "Technology",
+    "role": "Data Scientist",
+    "location": "Hyderabad - Microsoft",
+    "platform": "linkedin",
+    "query": "site:linkedin.com/jobs \"data scientist\" \"Microsoft\" \"Hyderabad\" \"Azure\" \"2025\"",
+    "intent_note": "Discover data science positions at Microsoft's Hyderabad campus"
+  },
+  {
+    "category": "Company Specific",
+    "sector": "Technology",
+    "role": "Product Manager",
+    "location": "Pune - Infosys",
+    "platform": "naukri",
+    "query": "site:naukri.com \"product manager\" \"Infosys\" \"Pune\" \"2025\"",
+    "intent_note": "Target product management roles at Infosys' Pune center"
+  },
+  {
+    "category": "Company Specific",
+    "sector": "Technology",
+    "role": "UI/UX Designer",
+    "location": "Chennai - Zoho",
+    "platform": "linkedin",
+    "query": "site:linkedin.com/jobs \"UI/UX designer\" \"Zoho\" \"Chennai\" \"2025\"",
+    "intent_note": "Find design positions at Zoho's Chennai headquarters"
+  },
+  {
+    "category": "Company Specific",
+    "sector": "Technology",
+    "role": "Software Engineer",
+    "location": "Delhi-NCR - Paytm",
+    "platform": "naukri",
+    "query": "site:naukri.com \"software engineer\" \"Paytm\" \"Noida\" \"2025\"",
+    "intent_note": "Discover software engineering roles at Paytm's Noida office"
+  },
+  {
+    "category": "Company Specific",
+    "sector": "Technology",
+    "role": "Machine Learning Engineer",
+    "location": "Silicon Valley - Meta",
+    "platform": "linkedin",
+    "query": "site:linkedin.com/jobs \"machine learning engineer\" \"Meta\" \"Menlo Park\" \"2025\"",
+    "intent_note": "Target ML engineering positions at Meta's Menlo Park headquarters"
+  },
+  {
+    "category": "Company Specific",
+    "sector": "Technology",
+    "role": "Data Engineer",
+    "location": "Silicon Valley - Netflix",
+    "platform": "indeed",
+    "query": "site:indeed.com \"data engineer\" \"Netflix\" \"Los Gatos\" \"2025\"",
+    "intent_note": "Find data engineering roles at Netflix's Los Gatos office"
+  },
+  {
+    "category": "Platform Specific",
+    "sector": "Technology",
+    "role": "Software Engineer",
+    "location": "Remote",
+    "platform": "wellfound",
+    "query": "site:wellfound.com \"software engineer\" \"remote\" \"startup\" \"equity\" \"2025\"",
+    "intent_note": "Discover remote software engineering roles at startups on Wellfound"
+  },
+  {
+    "category": "Platform Specific",
+    "sector": "Technology",
+    "role": "DevOps Engineer",
+    "location": "Remote",
+    "platform": "turing",
+    "query": "site:turing.com \"DevOps engineer\" \"remote\" \"US company\" \"2025\"",
+    "intent_note": "Target remote DevOps roles at US companies through Turing"
+  },
+  {
+    "category": "Platform Specific",
+    "sector": "Technology",
+    "role": "Full Stack Developer",
+    "location": "Bangalore",
+    "platform": "cutshort",
+    "query": "site:cutshort.io \"full stack developer\" \"Bangalore\" \"product company\" \"2025\"",
+    "intent_note": "Find full stack development roles at Bangalore product companies on CutShort"
+  },
+  {
+    "category": "Platform Specific",
+    "sector": "Technology",
+    "role": "Data Scientist",
+    "location": "Hyderabad",
+    "platform": "instahyre",
+    "query": "site:instahyre.com \"data scientist\" \"Hyderabad\" \"MNC\" \"2025\"",
+    "intent_note": "Discover data science positions at Hyderabad MNCs on Instahyre"
+  },
+  {
+    "category": "Platform Specific",
+    "sector": "Technology",
+    "role": "Product Manager",
+    "location": "Pune",
+    "platform": "iimjobs",
+    "query": "site:iimjobs.com \"product manager\" \"Pune\" \"leadership\" \"2025\"",
+    "intent_note": "Target senior product management roles in Pune on IIM Jobs"
+  },
+  {
+    "category": "Platform Specific",
+    "sector": "Technology",
+    "role": "Software Engineer",
+    "location": "Remote",
+    "platform": "weworkremotely",
+    "query": "site:weworkremotely.com \"software engineer\" \"remote\" \"worldwide\" \"2025\"",
+    "intent_note": "Find remote software engineering positions worldwide on WeWorkRemotely"
+  },
+  {
+    "category": "Hidden Gems",
+    "sector": "Technology",
+    "role": "Software Engineer",
+    "location": "Bangalore - Hasura",
+    "platform": "linkedin",
+    "query": "site:linkedin.com/jobs \"software engineer\" \"Hasura\" \"Bangalore\" \"GraphQL\" \"2025\"",
+    "intent_note": "Target software engineering roles at Bangalore-based Hasura"
+  },
+  {
+    "category": "Hidden Gems",
+    "sector": "Technology",
+    "role": "Full Stack Developer",
+    "location": "Bangalore - Appsmith",
+    "platform": "linkedin",
+    "query": "site:linkedin.com/jobs \"full stack developer\" \"Appsmith\" \"Bangalore\" \"low-code\" \"2025\"",
+    "intent_note": "Find full stack development positions at Bangalore-based Appsmith"
+  },
+  {
+    "category": "Hidden Gems",
+    "sector": "Technology",
+    "role": "DevOps Engineer",
+    "location": "Bangalore - SigNoz",
+    "platform": "linkedin",
+    "query": "site:linkedin.com/jobs \"DevOps engineer\" \"SigNoz\" \"Bangalore\" \"APM\" \"2025\"",
+    "intent_note": "Discover DevOps engineering roles at Bangalore-based SigNoz"
+  },
+  {
+    "category": "Hidden Gems",
+    "sector": "Technology",
+    "role": "Frontend Developer",
+    "location": "Bangalore - Dyte",
+    "platform": "linkedin",
+    "query": "site:linkedin.com/jobs \"frontend developer\" \"Dyte\" \"Bangalore\" \"video\" \"2025\"",
+    "intent_note": "Target frontend development roles at Bangalore-based Dyte"
+  },
+  {
+    "category": "Hidden Gems",
+    "sector": "Technology",
+    "role": "Data Engineer",
+    "location": "Hyderabad - Pando",
+    "platform": "linkedin",
+    "query": "site:linkedin.com/jobs \"data engineer\" \"Pando\" \"Hyderabad\" \"supply chain\" \"2025\"",
+    "intent_note": "Find data engineering positions at Hyderabad-based Pando"
+  },
+  {
+    "category": "Hidden Gems",
+    "sector": "Technology",
+    "role": "Backend Developer",
+    "location": "Pune - Shakudo",
+    "platform": "linkedin",
+    "query": "site:linkedin.com/jobs \"backend developer\" \"Shakudo\" \"Pune\" \"data stack\" \"2025\"",
+    "intent_note": "Discover backend development roles at Pune-based Shakudo"
+  },
+  {
+    "category": "Hidden Gems",
+    "sector": "Technology",
+    "role": "Software Engineer",
+    "location": "Chennai - Freshworks",
+    "platform": "linkedin",
+    "query": "site:linkedin.com/jobs \"software engineer\" \"Freshworks\" \"Chennai\" \"SaaS\" \"2025\"",
+    "intent_note": "Target software engineering roles at Chennai-based Freshworks"
+  },
+  {
+    "category": "Community-Based",
+    "sector": "Technology",
+    "role": "Software Engineer",
+    "location": "Bangalore",
+    "platform": "bangalorejs",
+    "query": "\"BangaloreJS\" \"hiring\" \"software engineer\" \"Bangalore\" \"2025\"",
+    "intent_note": "Find software engineering roles through BangaloreJS community"
+  },
+  {
+    "category": "Community-Based",
+    "sector": "Technology",
+    "role": "DevOps Engineer",
+    "location": "India",
+    "platform": "devopsindia",
+    "query": "\"DevOps India\" \"hiring\" \"DevOps engineer\" \"2025\"",
+    "intent_note": "Discover DevOps engineering roles through DevOps India community"
+  },
+  {
+    "category": "Community-Based",
+    "sector": "Technology",
+    "role": "Full Stack Developer",
+    "location": "Pune",
+    "platform": "punestartups",
+    "query": "\"Pune Startups\" \"hiring\" \"full stack developer\" \"2025\"",
+    "intent_note": "Target full stack development roles through Pune Startups community"
+  },
+  {
+    "category": "Community-Based",
+    "sector": "Technology",
+    "role": "Data Scientist",
+    "location": "Bangalore",
+    "platform": "pydatablr",
+    "query": "\"PyData BLR\" \"hiring\" \"data scientist\" \"Bangalore\" \"2025\"",
+    "intent_note": "Find data science roles through PyData Bangalore community"
+  },
+  {
+    "category": "Community-Based",
+    "sector": "Technology",
+    "role": "Cloud Engineer",
+    "location": "Hyderabad",
+    "platform": "awsughyd",
+    "query": "\"AWS UG Hyderabad\" \"hiring\" \"cloud engineer\" \"2025\"",
+    "intent_note": "Discover cloud engineering roles through AWS User Group Hyderabad"
+  },
+  {
+    "category": "Remote & International",
+    "sector": "Technology",
+    "role": "Software Engineer",
+    "location": "Remote - US Companies",
+    "platform": "turing",
+    "query": "site:turing.com \"software engineer\" \"remote\" \"US company\" \"India\" \"2025\"",
+    "intent_note": "Target remote software engineering roles at US companies for India-based candidates"
+  },
+  {
+    "category": "Remote & International",
+    "sector": "Technology",
+    "role": "DevOps Engineer",
+    "location": "Remote - EU Companies",
+    "platform": "remoteok",
+    "query": "site:remoteok.com \"DevOps engineer\" \"remote\" \"EU\" \"India\" \"2025\"",
+    "intent_note": "Find remote DevOps engineering roles at EU companies for India-based candidates"
+  },
+  {
+    "category": "Remote & International",
+    "sector": "Technology",
+    "role": "Data Scientist",
+    "location": "Remote - Global",
+    "platform": "toptal",
+    "query": "site:toptal.com \"data scientist\" \"remote\" \"global\" \"India\" \"2025\"",
+    "intent_note": "Discover remote data science roles at global companies for India-based candidates"
+  },
+  {
+    "category": "Remote & International",
+    "sector": "Technology",
+    "role": "Full Stack Developer",
+    "location": "Remote - Canada",
+    "platform": "linkedin",
+    "query": "site:linkedin.com/jobs \"full stack developer\" \"remote\" \"Canada\" \"visa sponsorship\" \"2025\"",
+    "intent_note": "Target remote full stack development roles in Canada offering visa sponsorship"
+  },
+  {
+    "category": "Remote & International",
+    "sector": "Technology",
+    "role": "Product Manager",
+    "location": "Remote - UK",
+    "platform": "linkedin",
+    "query": "site:linkedin.com/jobs \"product manager\" \"remote\" \"UK\" \"global hiring\" \"2025\"",
+    "intent_note": "Find remote product management roles in UK companies with global hiring"
+  }
+]

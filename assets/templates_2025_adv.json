@@ -1,0 +1,122 @@
+[
+  {
+    "query": "SaaS companies London contact email",
+    "sector": "Technology",
+    "role": "Sales",
+    "location": "London",
+    "platform": "Google",
+    "intent_note": "Find SaaS companies in London with contact information"
+  },
+  {
+    "query": "startup founders San Francisco email",
+    "sector": "Technology",
+    "role": "Founder",
+    "location": "San Francisco",
+    "platform": "Google",
+    "intent_note": "Locate startup founders in SF area"
+  },
+  {
+    "query": "marketing agencies New York contact",
+    "sector": "Marketing",
+    "role": "Marketing",
+    "location": "New York",
+    "platform": "Google",
+    "intent_note": "Find marketing agencies in NYC"
+  },
+  {
+    "query": "fintech companies Berlin team",
+    "sector": "Finance",
+    "role": "Team",
+    "location": "Berlin",
+    "platform": "Google",
+    "intent_note": "Discover fintech companies in Berlin"
+  },
+  {
+    "query": "healthcare startups Boston contact email",
+    "sector": "Healthcare",
+    "role": "Contact",
+    "location": "Boston",
+    "platform": "Google",
+    "intent_note": "Find healthcare startups in Boston area"
+  },
+  {
+    "query": "IT companies Bangalore hiring contact email",
+    "sector": "Technology",
+    "role": "HR",
+    "location": "India",
+    "platform": "Google",
+    "intent_note": "Find IT companies in Bangalore with hiring contacts"
+  },
+  {
+    "query": "software development companies Mumbai jobs contact",
+    "sector": "Technology",
+    "role": "Recruiter",
+    "location": "India",
+    "platform": "Google",
+    "intent_note": "Locate software companies in Mumbai for job opportunities"
+  },
+  {
+    "query": "tech startups Hyderabad careers email",
+    "sector": "Technology",
+    "role": "HR",
+    "location": "India",
+    "platform": "Google",
+    "intent_note": "Find tech startups in Hyderabad with career contacts"
+  },
+  {
+    "query": "IT services companies Delhi NCR recruitment",
+    "sector": "Technology",
+    "role": "Recruiter",
+    "location": "India",
+    "platform": "Google",
+    "intent_note": "Discover IT service companies in Delhi NCR for recruitment"
+  },
+  {
+    "query": "software companies Pune hiring manager contact",
+    "sector": "Technology",
+    "role": "Manager",
+    "location": "India",
+    "platform": "Google",
+    "intent_note": "Find software companies in Pune with hiring manager contacts"
+  },
+  {
+    "query": "product companies Chennai jobs email",
+    "sector": "Technology",
+    "role": "HR",
+    "location": "India",
+    "platform": "Google",
+    "intent_note": "Locate product companies in Chennai for job opportunities"
+  },
+  {
+    "query": "fintech companies India careers contact",
+    "sector": "Finance",
+    "role": "HR",
+    "location": "India",
+    "platform": "Google",
+    "intent_note": "Find fintech companies across India with career contacts"
+  },
+  {
+    "query": "edtech companies Bangalore recruitment email",
+    "sector": "Education",
+    "role": "Recruiter",
+    "location": "India",
+    "platform": "Google",
+    "intent_note": "Discover edtech companies in Bangalore for recruitment"
+  },
+  {
+    "query": "IT consulting firms Gurgaon hiring contact",
+    "sector": "Technology",
+    "role": "Consultant",
+    "location": "India",
+    "platform": "Google",
+    "intent_note": "Find IT consulting firms in Gurgaon with hiring contacts"
+  },
+  {
+    "query": "remote work companies India tech jobs",
+    "sector": "Technology",
+    "role": "Remote",
+    "location": "India",
+    "platform": "Google",
+    "intent_note": "Find companies offering remote tech jobs in India"
+  }
+]

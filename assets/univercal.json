@@ -1,0 +1,236 @@
+[
+    {
+      "category": "Jobs & Sectors",
+      "sector": "IT & Software",
+      "role": "CEO",
+      "location": "Delhi",
+      "platform": "google",
+      "query": "\"2025\" \"IT & Software\" \"CEO\" \"Delhi\" \"apply at\" \"gmail.com\"",
+      "intent_note": "Find CEOs in Delhi's IT sector applying for opportunities via Gmail"
+    },
+    {
+      "category": "Jobs & Sectors",
+      "sector": "Healthcare",
+      "role": "Medical Director",
+      "location": "Mumbai",
+      "platform": "google",
+      "query": "\"hospital\" \"job openings\" \"Medical Director\" \"Mumbai\" \"email\"",
+      "intent_note": "Locate hospital medical director positions in Mumbai with email contacts"
+    },
+    {
+      "category": "Jobs & Sectors",
+      "sector": "Finance",
+      "role": "CFO",
+      "location": "New York",
+      "platform": "linkedin",
+      "query": "site:linkedin.com/in \"CFO\" \"finance\" \"New York\" \"email\"",
+      "intent_note": "Identify finance CFOs in New York with contact emails on LinkedIn"
+    },
+    {
+      "category": "Jobs & Sectors",
+      "sector": "Real Estate",
+      "role": "Brokerage Owner",
+      "location": "London",
+      "platform": "google",
+      "query": "\"commercial real estate\" \"jobs\" \"brokerage owner\" \"London\" \"email\"",
+      "intent_note": "Find commercial real estate brokerage owners in London with email contacts"
+    },
+    {
+      "category": "Decision Maker Direct Contact",
+      "sector": "Technology",
+      "role": "Founder",
+      "location": "Silicon Valley",
+      "platform": "linkedin",
+      "query": "site:linkedin.com/in \"Founder\" \"technology\" \"Silicon Valley\" \"contact\"",
+      "intent_note": "Connect with tech founders in Silicon Valley for direct contact opportunities"
+    },
+    {
+      "category": "Decision Maker Direct Contact",
+      "sector": "Manufacturing",
+      "role": "Plant Manager",
+      "location": "Detroit",
+      "platform": "google",
+      "query": "\"automotive plant\" \"jobs\" \"plant manager\" \"Detroit\" \"email\"",
+      "intent_note": "Locate automotive plant managers in Detroit with email contacts"
+    },
+    {
+      "category": "Businesses Actively Spending Money",
+      "sector": "SaaS",
+      "role": "CTO",
+      "location": "Austin",
+      "platform": "google",
+      "query": "\"SaaS company\" \"hiring\" \"CTO email\" \"Austin\" site:*",
+      "intent_note": "Find SaaS companies in Austin actively hiring CTOs with email contacts"
+    },
+    {
+      "category": "Businesses Actively Spending Money",
+      "sector": "E-commerce",
+      "role": "Marketing Director",
+      "location": "Singapore",
+      "platform": "linkedin",
+      "query": "site:linkedin.com/jobs \"marketing director\" \"e-commerce\" \"Singapore\" \"email\"",
+      "intent_note": "Identify e-commerce companies in Singapore hiring marketing directors"
+    },
+    {
+      "category": "Event & Conference Leads",
+      "sector": "Technology",
+      "role": "Speaker",
+      "location": "Las Vegas",
+      "platform": "google",
+      "query": "\"CES 2025\" \"speakers\" \"CTO\" \"Las Vegas\" \"contact\" site:*",
+      "intent_note": "Find technology speakers at CES 2025 in Las Vegas with contact details"
+    },
+    {
+      "category": "Event & Conference Leads",
+      "sector": "Finance",
+      "role": "Attendee",
+      "location": "Zurich",
+      "platform": "google",
+      "query": "\"Money20/20\" \"attendees\" \"finance\" \"Zurich\" \"email\" site:*",
+      "intent_note": "Locate finance event attendees at Money20/20 in Zurich with email contacts"
+    },
+    {
+      "category": "Public Datasets",
+      "sector": "Government",
+      "role": "Procurement Officer",
+      "location": "Washington DC",
+      "platform": "google",
+      "query": "filetype:xls \"vendor list\" \"contact\" \"procurement\" \"Washington DC\" site:*",
+      "intent_note": "Access government procurement officer contact lists in Washington DC"
+    },
+    {
+      "category": "Public Datasets",
+      "sector": "Education",
+      "role": "Dean",
+      "location": "Boston",
+      "platform": "google",
+      "query": "filetype:pdf \"university leadership\" \"dean\" \"Boston\" \"email\" site:*",
+      "intent_note": "Find university dean contact information in Boston through public documents"
+    },
+    {
+      "category": "Hiring Pages (HR Leads)",
+      "sector": "Healthcare",
+      "role": "HR Director",
+      "location": "Chicago",
+      "platform": "google",
+      "query": "\"we are hiring\" \"email\" \"HR director\" \"Chicago\" \"healthcare\" site:*",
+      "intent_note": "Identify healthcare HR directors in Chicago through hiring pages"
+    },
+    {
+      "category": "Hiring Pages (HR Leads)",
+      "sector": "Retail",
+      "role": "Recruiter",
+      "location": "Los Angeles",
+      "platform": "google",
+      "query": "\"join our team\" \"contact\" \"recruiter\" \"retail\" \"Los Angeles\" site:*",
+      "intent_note": "Find retail recruiters in Los Angeles through company career pages"
+    },
+    {
+      "category": "Niche & High-Intent Leads",
+      "sector": "Green Energy",
+      "role": "Project Director",
+      "location": "Amsterdam",
+      "platform": "google",
+      "query": "\"renewable energy\" \"hiring\" \"project director\" \"Amsterdam\" \"email\"",
+      "intent_note": "Locate green energy project directors in Amsterdam with email contacts"
+    },
+    {
+      "category": "Niche & High-Intent Leads",
+      "sector": "Biotech",
+      "role": "Research Lead",
+      "location": "Boston",
+      "platform": "linkedin",
+      "query": "site:linkedin.com/in \"research lead\" \"biotech\" \"Boston\" \"email\"",
+      "intent_note": "Identify biotech research leads in Boston with contact emails"
+    },
+    {
+      "category": "Local Business Directories",
+      "sector": "Restaurant",
+      "role": "Owner",
+      "location": "Paris",
+      "platform": "google",
+      "query": "site:justdial.com \"restaurant\" \"owner\" \"Paris\" \"email\" \"phone\"",
+      "intent_note": "Find restaurant owners in Paris through local business directories"
+    },
+    {
+      "category": "Local Business Directories",
+      "sector": "Construction",
+      "role": "Contractor",
+      "location": "Dubai",
+      "platform": "google",
+      "query": "site:yellowpages.com \"construction\" \"contractor\" \"Dubai\" \"email\" \"phone\"",
+      "intent_note": "Locate construction contractors in Dubai through business directories"
+    },
+    {
+      "category": "Press Releases & News Contacts",
+      "sector": "Technology",
+      "role": "PR Manager",
+      "location": "San Francisco",
+      "platform": "google",
+      "query": "\"press release\" \"media contact\" \"PR manager\" \"San Francisco\" \"email\"",
+      "intent_note": "Find technology PR managers in San Francisco through press releases"
+    },
+    {
+      "category": "Press Releases & News Contacts",
+      "sector": "Finance",
+      "role": "Communications Director",
+      "location": "London",
+      "platform": "google",
+      "query": "\"news contact\" \"phone\" \"communications director\" \"finance\" \"London\"",
+      "intent_note": "Locate finance communications directors in London through news contacts"
+    },
+    {
+      "category": "Influencer & Partner Outreach",
+      "sector": "Fashion",
+      "role": "Brand Ambassador",
+      "location": "Milan",
+      "platform": "instagram",
+      "query": "\"brand ambassador\" \"fashion\" \"Milan\" \"email\" \"contact\"",
+      "intent_note": "Find fashion brand ambassadors in Milan for partnership opportunities"
+    },
+    {
+      "category": "Influencer & Partner Outreach",
+      "sector": "Travel",
+      "role": "Content Creator",
+      "location": "Bali",
+      "platform": "youtube",
+      "query": "\"collaboration\" \"contact\" \"travel\" \"Bali\" \"email\"",
+      "intent_note": "Identify travel content creators in Bali for collaboration opportunities"
+    },
+    {
+      "category": "Lead Magnet Hunters",
+      "sector": "Marketing",
+      "role": "Content Manager",
+      "location": "New York",
+      "platform": "google",
+      "query": "\"free ebook\" \"download\" \"contact\" \"content manager\" \"New York\" \"email\"",
+      "intent_note": "Find marketing content managers in New York offering lead magnets"
+    },
+    {
+      "category": "Lead Magnet Hunters",
+      "sector": "Finance",
+      "role": "Analyst",
+      "location": "Hong Kong",
+      "platform": "google",
+      "query": "\"whitepaper\" \"registration\" \"analyst\" \"finance\" \"Hong Kong\" \"email\"",
+      "intent_note": "Locate finance analysts in Hong Kong offering whitepaper downloads"
+    },
+    {
+      "category": "Advanced Marketing Dork Mix",
+      "sector": "Technology",
+      "role": "Developer",
+      "location": "Berlin",
+      "platform": "google",
+      "query": "(intitle:\"contact\" OR intitle:\"about us\") (\"email\" OR \"phone\") \"developer\" \"Berlin\" site:*",
+      "intent_note": "Find technology developers in Berlin through advanced search operators"
+    },
+    {
+      "category": "Advanced Marketing Dork Mix",
+      "sector": "E-commerce",
+      "role": "Operations Manager",
+      "location": "Sydney",
+      "platform": "google",
+      "query": "(inurl:\"contact\" OR inurl:\"about\") (\"gmail.com\" OR \"yahoo.com\") \"operations manager\" \"e-commerce\" \"Sydney\"",
+      "intent_note": "Locate e-commerce operations managers in Sydney using URL-based searches"
+    }
+  ]
