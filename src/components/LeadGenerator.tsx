@@ -5,17 +5,14 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
+import { Template } from "@/types";
+import { toast } from "sonner";
 
-interface Template {
-  platform: string;
-  sector: string;
-  role: string;
-  location: string;
-  intent_note: string;
-  query: string;
+interface LeadGeneratorProps {
+  onQueueForCrawl: (templates: Template[]) => void;
 }
 
-export const LeadGenerator = () => {
+export const LeadGenerator = ({ onQueueForCrawl }: LeadGeneratorProps) => {
   const [templates, setTemplates] = useState<Template[]>([]);
   const [filters, setFilters] = useState({
     sector: "all",
@@ -71,6 +68,11 @@ export const LeadGenerator = () => {
     });
   };
 
+  const handleQueueForCrawl = () => {
+    onQueueForCrawl(filteredTemplates);
+    toast.success(`${filteredTemplates.length} queries added to the crawl queue.`);
+  };
+
   return (
     <Card className="w-full max-w-3xl mx-auto">
       <CardHeader>
@@ -100,7 +102,7 @@ export const LeadGenerator = () => {
 
         <div className="flex gap-4">
           <Button onClick={handleOpenTop5} disabled={filteredTemplates.length === 0}>Open Top 5</Button>
-          <Button variant="secondary" onClick={() => console.log("Queueing all for crawl")} disabled={filteredTemplates.length === 0}>Queue for Crawl</Button>
+          <Button variant="secondary" onClick={handleQueueForCrawl} disabled={filteredTemplates.length === 0}>Queue for Crawl</Button>
         </div>
       </CardContent>
     </Card>
