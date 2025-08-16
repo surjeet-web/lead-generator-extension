@@ -87,6 +87,7 @@ document.addEventListener('DOMContentLoaded', () => {
     exportCsvBtn.addEventListener('click', () => handleExport('csv'));
     exportJsonBtn.addEventListener('click', () => handleExport('json'));
     exportTxtBtn.addEventListener('click', () => handleExport('txt'));
+    leadsTableBody.addEventListener('click', handleDeleteLead);
   }
 
   function setupChromeListeners() {
@@ -203,15 +204,18 @@ document.addEventListener('DOMContentLoaded', () => {
     leadsCountSpan.textContent = leads.length;
     const sortedLeads = [...leads].sort((a, b) => b.score - a.score);
     if (sortedLeads.length === 0) {
-      leadsTableBody.innerHTML = '<tr><td colspan="4" style="text-align: center; padding: 24px;">No leads found yet.</td></tr>';
+      leadsTableBody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 24px;">No leads found yet.</td></tr>';
     } else {
       sortedLeads.forEach(lead => {
         const tr = document.createElement('tr');
+        const leadDate = new Date(lead.firstSeenAt).toLocaleDateString();
         tr.innerHTML = `
           <td>${lead.type}</td>
           <td>${lead.value}</td>
           <td>${lead.type === 'email' ? lead.score : '-'}</td>
           <td><a href="${lead.sourceUrl}" target="_blank" title="${lead.sourceUrl}">${lead.sourceUrl}</a></td>
+          <td>${leadDate}</td>
+          <td><button class="delete-lead-btn" data-lead-id="${lead.id}" title="Delete Lead">🗑️</button></td>
         `;
         leadsTableBody.appendChild(tr);
       });
@@ -289,6 +293,15 @@ document.addEventListener('DOMContentLoaded', () => {
     if (confirm('Are you sure you want to delete all leads? This cannot be undone.')) {
       leads = [];
       chrome.storage.local.set({ leads: [] });
+    }
+  }
+
+  function handleDeleteLead(event) {
+    const deleteButton = event.target.closest('.delete-lead-btn');
+    if (deleteButton) {
+      const leadIdToDelete = deleteButton.dataset.leadId;
+      const updatedLeads = leads.filter(lead => lead.id !== leadIdToDelete);
+      chrome.storage.local.set({ leads: updatedLeads });
     }
   }
 
