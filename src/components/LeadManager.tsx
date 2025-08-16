@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Separator } from "@/components/ui/separator";
+import { Progress } from "@/components/ui/progress";
 import { Lead, Template } from "@/types";
 import { toCSV } from "@/lib/utils";
 import { toast } from "sonner";
@@ -16,7 +17,10 @@ interface LeadManagerProps {
 
 export const LeadManager = ({ queue, onClearQueue }: LeadManagerProps) => {
   const [leads, setLeads] = useState<Lead[]>([]);
-  const [isCrawling, setIsCrawling] = useState(false);
+  const [crawlStatus, setCrawlStatus] = useState("Idle");
+  const [crawlProgress, setCrawlProgress] = useState("");
+
+  const isCrawling = crawlStatus === "Crawling";
 
   // Effect to load leads from storage and listen for updates
   useEffect(() => {
@@ -25,58 +29,39 @@ export const LeadManager = ({ queue, onClearQueue }: LeadManagerProps) => {
         setLeads(data.leads.sort((a, b) => b.score - a.score));
       });
     };
-
-    getLeads(); // Initial load
-
+    getLeads();
     const storageListener = (changes, area) => {
-      if (area === 'local' && changes.leads) {
-        getLeads(); // Reload on change
-      }
+      if (area === 'local' && changes.leads) getLeads();
     };
-
     chrome.storage.onChanged.addListener(storageListener);
-
-    return () => {
-      chrome.storage.onChanged.removeListener(storageListener);
-    };
+    return () => chrome.storage.onChanged.removeListener(storageListener);
   }, []);
 
-  const handleStartCrawling = async () => {
+  // Effect to listen for crawl status updates from background script
+  useEffect(() => {
+    const messageListener = (message) => {
+      if (message.action === "crawlUpdate") {
+        const { status, progress, newLeadsCount } = message.data;
+        if (status) setCrawlStatus(status);
+        if (progress) setCrawlProgress(progress);
+        if (newLeadsCount) toast.success(`Found ${newLeadsCount} new leads!`);
+      }
+    };
+    chrome.runtime.onMessage.addListener(messageListener);
+    return () => chrome.runtime.onMessage.removeListener(messageListener);
+  }, []);
+
+  const handleStartCrawling = () => {
     if (queue.length === 0) return;
-    setIsCrawling(true);
-    toast.info(`Starting crawl for ${queue.length} queries...`);
+    chrome.runtime.sendMessage({ action: "startCrawl", data: queue });
+    setCrawlStatus("Crawling");
+    setCrawlProgress("Initializing...");
+  };
 
-    for (const template of queue) {
-      let searchUrl;
-      switch (template.platform.toLowerCase()) {
-        case 'google':
-          searchUrl = `https://www.google.com/search?q=${encodeURIComponent(template.query)}`;
-          break;
-        case 'bing':
-          searchUrl = `https://www.bing.com/search?q=${encodeURIComponent(template.query)}`;
-          break;
-        case 'linkedin':
-          searchUrl = `https://www.linkedin.com/search/results/all/?keywords=${encodeURIComponent(template.query)}`;
-          break;
-        default:
-          searchUrl = `https://www.google.com/search?q=${encodeURIComponent(template.query)}`;
-      }
-      
-      // Open a new tab for the search query
-      const tab = await chrome.tabs.create({ url: searchUrl, active: false });
-      
-      // Give the page a moment to load before closing
-      await new Promise(resolve => setTimeout(resolve, 5000)); 
-      
-      // The content script runs automatically, so we just close the tab
-      if (tab.id) {
-        await chrome.tabs.remove(tab.id);
-      }
-    }
-
-    setIsCrawling(false);
-    toast.success("Crawl finished!");
-    onClearQueue();
+  const handleStopCrawling = () => {
+    chrome.runtime.sendMessage({ action: "stopCrawl" });
+    setCrawlStatus("Idle");
+    setCrawlProgress("");
   };
 
   const handleExport = () => {
@@ -122,29 +107,36 @@ export const LeadManager = ({ queue, onClearQueue }: LeadManagerProps) => {
           )}
           {queue.length > 3 && <p className="text-sm text-muted-foreground text-center">...and {queue.length - 3} more.</p>}
         </div>
-        <div className="flex gap-4 mb-6">
-          <Button onClick={handleStartCrawling} disabled={queue.length === 0 || isCrawling}>
-            {isCrawling ? "Crawling..." : "Start Crawling"}
-          </Button>
+        <div className="flex gap-4 mb-2">
+          {!isCrawling ? (
+            <Button onClick={handleStartCrawling} disabled={queue.length === 0}>Start Deep Crawl</Button>
+          ) : (
+            <Button variant="destructive" onClick={handleStopCrawling}>Stop Crawl</Button>
+          )}
           <Button variant="outline" onClick={onClearQueue} disabled={queue.length === 0 || isCrawling}>Clear Queue</Button>
         </div>
+        {isCrawling && (
+          <div className="space-y-1 mt-4">
+            <p className="text-sm font-medium text-muted-foreground">{crawlProgress}</p>
+            <Progress value={isCrawling ? 100 : 0} className="w-full h-2 animate-pulse" />
+          </div>
+        )}
 
-        <Separator className="my-4" />
+        <Separator className="my-6" />
 
         <div className="flex justify-between items-center mb-2">
           <h3 className="text-lg font-semibold">Extracted Leads ({leads.length})</h3>
           <div className="flex gap-4">
-            <Button variant="destructive" onClick={handleClearLeads} disabled={leads.length === 0}>Clear Leads</Button>
-            <Button onClick={handleExport} disabled={leads.length === 0}>Export to CSV</Button>
+            <Button variant="outline" size="sm" onClick={handleClearLeads} disabled={leads.length === 0 || isCrawling}>Clear Leads</Button>
+            <Button size="sm" onClick={handleExport} disabled={leads.length === 0}>Export to CSV</Button>
           </div>
         </div>
-        <div className="border rounded-md">
+        <div className="border rounded-md max-h-[400px] overflow-y-auto">
           <Table>
             <TableHeader>
               <TableRow>
                 <TableHead>Email</TableHead>
                 <TableHead className="w-[100px]">Score</TableHead>
-                <TableHead>Domain</TableHead>
                 <TableHead>Source</TableHead>
               </TableRow>
             </TableHeader>
@@ -154,13 +146,12 @@ export const LeadManager = ({ queue, onClearQueue }: LeadManagerProps) => {
                   <TableRow key={lead.id}>
                     <TableCell className="font-medium">{lead.email}</TableCell>
                     <TableCell>{lead.score}</TableCell>
-                    <TableCell>{lead.domain}</TableCell>
-                    <TableCell><a href={lead.sourceUrl} target="_blank" rel="noopener noreferrer" className="underline hover:text-primary truncate max-w-[150px] block" title={lead.sourceUrl}>{lead.sourceUrl}</a></TableCell>
+                    <TableCell><a href={lead.sourceUrl} target="_blank" rel="noopener noreferrer" className="underline hover:text-primary truncate max-w-[200px] block" title={lead.sourceUrl}>{lead.sourceUrl}</a></TableCell>
                   </TableRow>
                 ))
               ) : (
                 <TableRow>
-                  <TableCell colSpan={4} className="h-24 text-center">No leads found yet.</TableCell>
+                  <TableCell colSpan={3} className="h-24 text-center">No leads found yet.</TableCell>
                 </TableRow>
               )}
             </TableBody>
