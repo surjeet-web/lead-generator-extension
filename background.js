@@ -1,8 +1,8 @@
 let crawlQueue = [];
+let siteCrawlQueue = []; // New queue for individual site URLs {url, depth}
 let isCrawling = false;
 let currentQueryIndex = 0;
-let currentLinks = [];
-let currentLinkIndex = 0;
+let settings = {};
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.action === "startCrawl") handleStartCrawl(message.data);
@@ -11,23 +11,26 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   return true;
 });
 
-function handleStartCrawl(queue) {
+function handleStartCrawl({ queue, settings: newSettings }) {
   if (isCrawling) return;
   isCrawling = true;
   crawlQueue = queue;
+  settings = newSettings;
   currentQueryIndex = 0;
-  console.log("Starting deep crawl with queue:", crawlQueue);
-  processQueue();
+  siteCrawlQueue = [];
+  console.log("Starting deep crawl with settings:", settings);
+  processSearchQuery();
 }
 
 function handleStopCrawl() {
   console.log("Stopping crawl.");
   isCrawling = false;
   crawlQueue = [];
+  siteCrawlQueue = [];
   updateUI({ status: "Stopped", progress: "" });
 }
 
-function processQueue() {
+function processSearchQuery() {
   if (!isCrawling || currentQueryIndex >= crawlQueue.length) {
     isCrawling = false;
     updateUI({ status: "Finished", progress: "Crawl complete!" });
@@ -56,59 +59,87 @@ function injectSerpParser(tabId) {
   }, (injectionResults) => {
     chrome.tabs.remove(tabId);
     if (chrome.runtime.lastError || !injectionResults || !injectionResults[0]) {
-      moveToNextQuery();
+      currentQueryIndex++;
+      processSearchQuery();
       return;
     }
     const links = injectionResults[0].result || [];
-    
-    chrome.storage.local.get({ domainBlacklist: [] }, (data) => {
-      const blacklist = data.domainBlacklist || [];
-      const filteredLinks = links.filter(link => {
-        try {
-          const url = new URL(link);
-          return !blacklist.some(blacklistedDomain => url.hostname.includes(blacklistedDomain));
-        } catch (e) {
-          return false; // Ignore invalid URLs
-        }
-      });
-      
-      console.log(`Found ${links.length} links, ${filteredLinks.length} after blacklist.`);
-      currentLinks = filteredLinks;
-      currentLinkIndex = 0;
-      processLinks();
+    const blacklist = settings.domainBlacklist || [];
+    const filteredLinks = links.filter(link => {
+      try {
+        const url = new URL(link);
+        return !blacklist.some(blacklistedDomain => url.hostname.includes(blacklistedDomain));
+      } catch (e) { return false; }
     });
+    
+    console.log(`Found ${links.length} links, ${filteredLinks.length} after blacklist.`);
+    // Populate the siteCrawlQueue with initial links from SERP
+    siteCrawlQueue.push(...filteredLinks.map(link => ({ url: link, depth: settings.crawlDepth })));
+    processSiteQueue(); // Start processing the site queue
   });
 }
 
-function processLinks() {
-  if (!isCrawling || currentLinkIndex >= currentLinks.length) {
-    moveToNextQuery();
+function processSiteQueue() {
+  if (!isCrawling) return;
+
+  if (siteCrawlQueue.length === 0) {
+    // Move to the next search query when the site queue is empty
+    currentQueryIndex++;
+    processSearchQuery();
     return;
   }
-  const url = currentLinks[currentLinkIndex];
+
+  const { url, depth } = siteCrawlQueue.shift();
+  
   chrome.tabs.create({ url, active: false }, (tab) => {
     const tabId = tab.id;
-    chrome.tabs.onUpdated.addListener(function listener(_tabId, info) {
-      if (_tabId === tabId && info.status === 'complete') {
-        chrome.tabs.onUpdated.removeListener(listener);
+    let loaded = false;
+    const onUpdatedListener = (_tabId, info) => {
+      if (_tabId === tabId && info.status === 'complete' && !loaded) {
+        loaded = true; // Prevents multiple executions
+        chrome.tabs.onUpdated.removeListener(onUpdatedListener);
+        
+        // 1. Scrape for contacts
         chrome.scripting.executeScript({
           target: { tabId: tabId },
           files: ['content.js'],
-        }, () => {
+        });
+
+        // 2. If depth > 0, find internal links to continue crawling
+        if (depth > 0) {
+          chrome.scripting.executeScript({
+            target: { tabId: tabId },
+            function: findInternalLinks,
+          }, (injectionResults) => {
+            if (injectionResults && injectionResults[0] && injectionResults[0].result) {
+              const internalLinks = injectionResults[0].result;
+              siteCrawlQueue.push(...internalLinks.map(link => ({ url: link, depth: depth - 1 })));
+            }
+            // 3. Close tab and process next in queue
+            setTimeout(() => {
+              chrome.tabs.remove(tabId).catch(()=>{});
+              processSiteQueue();
+            }, 1000);
+          });
+        } else {
+          // 3. Close tab and process next in queue
           setTimeout(() => {
             chrome.tabs.remove(tabId).catch(()=>{});
-            currentLinkIndex++;
-            processLinks();
-          }, 2000);
-        });
+            processSiteQueue();
+          }, 1000);
+        }
       }
-    });
+    };
+    chrome.tabs.onUpdated.addListener(onUpdatedListener);
+    // Timeout to prevent tabs from hanging
+    setTimeout(() => {
+      if (!loaded) {
+        chrome.tabs.onUpdated.removeListener(onUpdatedListener);
+        chrome.tabs.remove(tabId).catch(()=>{});
+        processSiteQueue();
+      }
+    }, 20000);
   });
-}
-
-function moveToNextQuery() {
-  currentQueryIndex++;
-  processQueue();
 }
 
 function scrapeSerpLinks() {
@@ -123,6 +154,26 @@ function scrapeSerpLinks() {
     } catch (e) {}
   });
   return Array.from(links);
+}
+
+function findInternalLinks() {
+  const links = new Set();
+  const currentHostname = window.location.hostname;
+  const linkKeywords = ['about', 'contact', 'team', 'career'];
+  
+  document.querySelectorAll('a[href]').forEach(a => {
+    try {
+      const url = new URL(a.href);
+      if (url.hostname === currentHostname) {
+        // Prioritize links with relevant keywords
+        if (linkKeywords.some(keyword => url.pathname.toLowerCase().includes(keyword))) {
+          links.add(url.href);
+        }
+      }
+    } catch (e) {}
+  });
+  // Limit to 5 internal links to avoid excessive crawling
+  return Array.from(links).slice(0, 5);
 }
 
 function handleExtractedLeads(leads) {

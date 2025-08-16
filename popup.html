@@ -47,9 +47,19 @@
         <p class="description">Manage your crawl queue and export extracted leads.</p>
         
         <h3>Settings</h3>
-        <div class="filter-group">
-          <label for="domain-blacklist">Domain Blacklist (one per line)</label>
-          <textarea id="domain-blacklist" rows="3" placeholder="e.g., facebook.com&#10;linkedin.com"></textarea>
+        <div class="filters">
+          <div class="filter-group">
+            <label for="domain-blacklist">Domain Blacklist (one per line)</label>
+            <textarea id="domain-blacklist" rows="3" placeholder="e.g., facebook.com&#10;linkedin.com"></textarea>
+          </div>
+          <div class="filter-group">
+            <label for="crawl-depth">Crawl Depth</label>
+            <select id="crawl-depth">
+              <option value="0">Landing Page Only</option>
+              <option value="1" selected>1 Level Deep</option>
+              <option value="2">2 Levels Deep</option>
+            </select>
+          </div>
         </div>
         <div class="actions">
             <button id="save-settings-btn">Save Settings</button>

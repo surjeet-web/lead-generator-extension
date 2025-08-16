@@ -5,7 +5,10 @@ document.addEventListener('DOMContentLoaded', () => {
   let crawlQueue = [];
   let leads = [];
   let crawlStatus = "Idle";
-  let domainBlacklist = [];
+  let settings = {
+    domainBlacklist: [],
+    crawlDepth: 1,
+  };
 
   // --- DOM ELEMENTS ---
   const filters = {
@@ -19,6 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const queueForCrawlBtn = document.getElementById('queue-for-crawl-btn');
   
   const domainBlacklistTextarea = document.getElementById('domain-blacklist');
+  const crawlDepthSelect = document.getElementById('crawl-depth');
   const saveSettingsBtn = document.getElementById('save-settings-btn');
 
   const queueContainer = document.getElementById('queue-container');
@@ -63,10 +67,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function loadStateFromStorage() {
     return new Promise(resolve => {
-      chrome.storage.local.get({ crawlQueue: [], leads: [], domainBlacklist: [] }, (data) => {
+      chrome.storage.local.get({ crawlQueue: [], leads: [], settings: { domainBlacklist: [], crawlDepth: 1 } }, (data) => {
         crawlQueue = data.crawlQueue || [];
         leads = data.leads || [];
-        domainBlacklist = data.domainBlacklist || [];
+        settings = data.settings;
         resolve();
       });
     });
@@ -96,8 +100,8 @@ document.addEventListener('DOMContentLoaded', () => {
           crawlQueue = changes.crawlQueue.newValue || [];
           renderCrawlQueue();
         }
-        if (changes.domainBlacklist) {
-          domainBlacklist = changes.domainBlacklist.newValue || [];
+        if (changes.settings) {
+          settings = changes.settings.newValue;
           renderSettings();
         }
       }
@@ -115,7 +119,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // --- RENDER FUNCTIONS ---
   function renderSettings() {
-    domainBlacklistTextarea.value = domainBlacklist.join('\n');
+    domainBlacklistTextarea.value = settings.domainBlacklist.join('\n');
+    crawlDepthSelect.value = settings.crawlDepth;
   }
 
   function populateFilters() {
@@ -234,12 +239,14 @@ document.addEventListener('DOMContentLoaded', () => {
     clearLeadsBtn.disabled = leads.length === 0 || isCrawling;
     saveSettingsBtn.disabled = isCrawling;
     domainBlacklistTextarea.disabled = isCrawling;
+    crawlDepthSelect.disabled = isCrawling;
   }
 
   // --- HANDLER FUNCTIONS ---
   function handleSaveSettings() {
-    const domains = domainBlacklistTextarea.value.split('\n').map(d => d.trim()).filter(Boolean);
-    chrome.storage.local.set({ domainBlacklist: domains }, () => {
+    settings.domainBlacklist = domainBlacklistTextarea.value.split('\n').map(d => d.trim()).filter(Boolean);
+    settings.crawlDepth = parseInt(crawlDepthSelect.value, 10);
+    chrome.storage.local.set({ settings }, () => {
       const originalText = saveSettingsBtn.textContent;
       saveSettingsBtn.textContent = 'Saved!';
       setTimeout(() => {
@@ -269,7 +276,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (crawlStatus === "Crawling") {
       chrome.runtime.sendMessage({ action: "stopCrawl" });
     } else if (crawlQueue.length > 0) {
-      chrome.runtime.sendMessage({ action: "startCrawl", data: crawlQueue });
+      chrome.runtime.sendMessage({ action: "startCrawl", data: { queue: crawlQueue, settings } });
     }
   }
 
