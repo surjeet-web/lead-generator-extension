@@ -1,0 +1,267 @@
+document.addEventListener('DOMContentLoaded', () => {
+  // --- STATE ---
+  let allTemplates = [];
+  let filteredTemplates = [];
+  let crawlQueue = [];
+  let leads = [];
+  let crawlStatus = "Idle";
+
+  // --- DOM ELEMENTS ---
+  const filters = {
+    sector: document.getElementById('sector-filter'),
+    role: document.getElementById('role-filter'),
+    location: document.getElementById('location-filter'),
+    platform: document.getElementById('platform-filter'),
+  };
+  const queriesContainer = document.getElementById('queries-container');
+  const openTop5Btn = document.getElementById('open-top-5-btn');
+  const queueForCrawlBtn = document.getElementById('queue-for-crawl-btn');
+  
+  const queueContainer = document.getElementById('queue-container');
+  const queueCountSpan = document.getElementById('queue-count');
+  const startCrawlBtn = document.getElementById('start-crawl-btn');
+  const clearQueueBtn = document.getElementById('clear-queue-btn');
+
+  const crawlStatusContainer = document.getElementById('crawl-status-container');
+  const crawlProgressText = document.getElementById('crawl-progress-text');
+
+  const leadsTableBody = document.getElementById('leads-table-body');
+  const leadsCountSpan = document.getElementById('leads-count');
+  const clearLeadsBtn = document.getElementById('clear-leads-btn');
+  const exportCsvBtn = document.getElementById('export-csv-btn');
+
+  // --- INITIALIZATION ---
+  async function init() {
+    await loadTemplates();
+    await loadStateFromStorage();
+
+    populateFilters();
+    applyFiltersAndRender();
+    renderCrawlQueue();
+    renderLeadsTable();
+    updateCrawlStatusUI();
+
+    setupEventListeners();
+    setupChromeListeners();
+  }
+
+  async function loadTemplates() {
+    try {
+      const response = await fetch('assets/templates_2025_adv.json');
+      allTemplates = await response.json();
+    } catch (error) {
+      console.error("Failed to load templates:", error);
+    }
+  }
+
+  function loadStateFromStorage() {
+    return new Promise(resolve => {
+      chrome.storage.local.get({ crawlQueue: [], leads: [] }, (data) => {
+        crawlQueue = data.crawlQueue || [];
+        leads = data.leads || [];
+        resolve();
+      });
+    });
+  }
+
+  function setupEventListeners() {
+    Object.values(filters).forEach(select => select.addEventListener('change', applyFiltersAndRender));
+    openTop5Btn.addEventListener('click', handleOpenTop5);
+    queueForCrawlBtn.addEventListener('click', handleQueueForCrawl);
+    startCrawlBtn.addEventListener('click', handleStartCrawl);
+    clearQueueBtn.addEventListener('click', handleClearQueue);
+    clearLeadsBtn.addEventListener('click', handleClearLeads);
+    exportCsvBtn.addEventListener('click', handleExportCSV);
+  }
+
+  function setupChromeListeners() {
+    chrome.storage.onChanged.addListener((changes, area) => {
+      if (area === 'local') {
+        if (changes.leads) {
+          leads = changes.leads.newValue || [];
+          renderLeadsTable();
+        }
+        if (changes.crawlQueue) {
+          crawlQueue = changes.crawlQueue.newValue || [];
+          renderCrawlQueue();
+        }
+      }
+    });
+
+    chrome.runtime.onMessage.addListener((message) => {
+      if (message.action === "crawlUpdate") {
+        const { status, progress } = message.data;
+        if (status) crawlStatus = status;
+        if (progress) crawlProgressText.textContent = progress;
+        updateCrawlStatusUI();
+      }
+    });
+  }
+
+  // --- RENDER FUNCTIONS ---
+  function populateFilters() {
+    const unique = { sector: new Set(), role: new Set(), location: new Set(), platform: new Set() };
+    allTemplates.forEach(t => {
+      unique.sector.add(t.sector);
+      unique.role.add(t.role);
+      unique.location.add(t.location);
+      unique.platform.add(t.platform);
+    });
+
+    for (const key in unique) {
+      const select = filters[key];
+      select.innerHTML = '<option value="all">All</option>';
+      [...unique[key]].sort().forEach(val => {
+        const option = document.createElement('option');
+        option.value = val;
+        option.textContent = val;
+        select.appendChild(option);
+      });
+    }
+  }
+
+  function applyFiltersAndRender() {
+    const activeFilters = {
+      sector: filters.sector.value,
+      role: filters.role.value,
+      location: filters.location.value,
+      platform: filters.platform.value,
+    };
+
+    filteredTemplates = allTemplates.filter(t => 
+      (activeFilters.sector === 'all' || t.sector === activeFilters.sector) &&
+      (activeFilters.role === 'all' || t.role === activeFilters.role) &&
+      (activeFilters.location === 'all' || t.location === activeFilters.location) &&
+      (activeFilters.platform === 'all' || t.platform === activeFilters.platform)
+    );
+    renderFilteredTemplates();
+  }
+
+  function renderFilteredTemplates() {
+    queriesContainer.innerHTML = '';
+    if (filteredTemplates.length === 0) {
+      queriesContainer.innerHTML = '<p class="placeholder">No matching templates found.</p>';
+    } else {
+      filteredTemplates.slice(0, 5).forEach(t => {
+        const div = document.createElement('div');
+        div.className = 'query-item';
+        div.innerHTML = `<p>${t.query}</p><p class="meta">${t.platform} - ${t.intent_note}</p>`;
+        queriesContainer.appendChild(div);
+      });
+    }
+    openTop5Btn.disabled = filteredTemplates.length === 0;
+    queueForCrawlBtn.disabled = filteredTemplates.length === 0;
+  }
+
+  function renderCrawlQueue() {
+    queueContainer.innerHTML = '';
+    queueCountSpan.textContent = crawlQueue.length;
+    if (crawlQueue.length === 0) {
+      queueContainer.innerHTML = '<p class="placeholder">Queue is empty.</p>';
+    } else {
+      crawlQueue.slice(0, 5).forEach(t => {
+        const p = document.createElement('p');
+        p.textContent = t.query;
+        p.title = t.query;
+        queueContainer.appendChild(p);
+      });
+      if (crawlQueue.length > 5) {
+        const p = document.createElement('p');
+        p.textContent = `...and ${crawlQueue.length - 5} more.`;
+        queueContainer.appendChild(p);
+      }
+    }
+    updateCrawlStatusUI();
+  }
+
+  function renderLeadsTable() {
+    leadsTableBody.innerHTML = '';
+    leadsCountSpan.textContent = leads.length;
+    const sortedLeads = [...leads].sort((a, b) => b.score - a.score);
+    if (sortedLeads.length === 0) {
+      leadsTableBody.innerHTML = '<tr><td colspan="3" style="text-align: center; padding: 24px;">No leads found yet.</td></tr>';
+    } else {
+      sortedLeads.forEach(lead => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td>${lead.email}</td><td>${lead.score}</td><td><a href="${lead.sourceUrl}" target="_blank" title="${lead.sourceUrl}">${lead.sourceUrl}</a></td>`;
+        leadsTableBody.appendChild(tr);
+      });
+    }
+    clearLeadsBtn.disabled = leads.length === 0;
+    exportCsvBtn.disabled = leads.length === 0;
+  }
+
+  function updateCrawlStatusUI() {
+    const isCrawling = crawlStatus === "Crawling";
+    if (isCrawling) {
+      startCrawlBtn.textContent = 'Stop Crawl';
+      startCrawlBtn.classList.add('danger');
+      crawlStatusContainer.style.display = 'block';
+    } else {
+      startCrawlBtn.textContent = 'Start Deep Crawl';
+      startCrawlBtn.classList.remove('danger');
+      crawlStatusContainer.style.display = 'none';
+    }
+    startCrawlBtn.disabled = crawlQueue.length === 0 && !isCrawling;
+    clearQueueBtn.disabled = crawlQueue.length === 0 || isCrawling;
+    clearLeadsBtn.disabled = leads.length === 0 || isCrawling;
+  }
+
+  // --- HANDLER FUNCTIONS ---
+  function handleOpenTop5() {
+    filteredTemplates.slice(0, 5).forEach(template => {
+      const searchUrl = `https://www.google.com/search?q=${encodeURIComponent(template.query)}`;
+      chrome.tabs.create({ url: searchUrl });
+    });
+  }
+
+  function handleQueueForCrawl() {
+    const newTemplates = filteredTemplates.filter(
+      (t) => !crawlQueue.some((cq) => cq.query === t.query)
+    );
+    if (newTemplates.length > 0) {
+      crawlQueue.push(...newTemplates);
+      chrome.storage.local.set({ crawlQueue });
+    }
+  }
+
+  function handleStartCrawl() {
+    if (crawlStatus === "Crawling") {
+      chrome.runtime.sendMessage({ action: "stopCrawl" });
+    } else if (crawlQueue.length > 0) {
+      chrome.runtime.sendMessage({ action: "startCrawl", data: crawlQueue });
+    }
+  }
+
+  function handleClearQueue() {
+    crawlQueue = [];
+    chrome.storage.local.set({ crawlQueue: [] });
+  }
+
+  function handleClearLeads() {
+    if (confirm('Are you sure you want to delete all leads? This cannot be undone.')) {
+      leads = [];
+      chrome.storage.local.set({ leads: [] });
+    }
+  }
+
+  function handleExportCSV() {
+    if (leads.length === 0) return;
+    const headers = Object.keys(leads[0]);
+    const csvRows = [
+      headers.join(','),
+      ...leads.map(row =>
+        headers.map(header => `"${String(row[header]).replace(/"/g, '""')}"`).join(',')
+      )
+    ];
+    const csvContent = csvRows.join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.setAttribute('href', url);
+    link.setAttribute('download', 'leads.csv');
+    link.click();
+  }
+
+  init();
+});

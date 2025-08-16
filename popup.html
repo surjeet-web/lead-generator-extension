@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Lead Generator</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Lead Generator</h1>
+    </header>
+
+    <main>
+      <section class="card">
+        <h2>Targeted Search</h2>
+        <p class="description">Use templates to find high-probability pages with contact info.</p>
+        <div class="filters">
+          <div class="filter-group">
+            <label for="sector-filter">Sector</label>
+            <select id="sector-filter"></select>
+          </div>
+          <div class="filter-group">
+            <label for="role-filter">Role</label>
+            <select id="role-filter"></select>
+          </div>
+          <div class="filter-group">
+            <label for="location-filter">Location</label>
+            <select id="location-filter"></select>
+          </div>
+          <div class="filter-group">
+            <label for="platform-filter">Platform</label>
+            <select id="platform-filter"></select>
+          </div>
+        </div>
+        <hr>
+        <h3>Top 5 Queries</h3>
+        <div id="queries-container" class="queries-container">
+        </div>
+        <div class="actions">
+          <button id="open-top-5-btn">Open Top 5</button>
+          <button id="queue-for-crawl-btn" class="secondary">Queue for Crawl</button>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Lead Manager</h2>
+        <p class="description">Manage your crawl queue and export extracted leads.</p>
+        <h3>Crawl Queue (<span id="queue-count">0</span>)</h3>
+        <div id="queue-container" class="queue-container">
+          <p class="placeholder">Queue is empty.</p>
+        </div>
+        <div class="actions">
+          <button id="start-crawl-btn">Start Deep Crawl</button>
+          <button id="clear-queue-btn" class="outline">Clear Queue</button>
+        </div>
+        <div id="crawl-status-container" class="crawl-status" style="display: none;">
+          <p id="crawl-progress-text"></p>
+          <div class="progress-bar">
+            <div class="progress-bar-inner"></div>
+          </div>
+        </div>
+        <hr>
+        <div class="header-actions">
+          <h3>Extracted Leads (<span id="leads-count">0</span>)</h3>
+          <div class="actions">
+            <button id="clear-leads-btn" class="danger outline">Clear Leads</button>
+            <button id="export-csv-btn">Export to CSV</button>
+          </div>
+        </div>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Email</th>
+                <th>Score</th>
+                <th>Source</th>
+              </tr>
+            </thead>
+            <tbody id="leads-table-body">
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+    <footer>
+      <p>Lead Generator v0.1.0</p>
+    </footer>
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html>
