@@ -21,6 +21,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const openTop5Btn = document.getElementById('open-top-5-btn');
   const queueForCrawlBtn = document.getElementById('queue-for-crawl-btn');
   
+  const customQueryInput = document.getElementById('custom-query-input');
+  const addCustomQueryBtn = document.getElementById('add-custom-query-btn');
+
   const domainBlacklistTextarea = document.getElementById('domain-blacklist');
   const crawlDepthSelect = document.getElementById('crawl-depth');
   const saveSettingsBtn = document.getElementById('save-settings-btn');
@@ -80,6 +83,7 @@ document.addEventListener('DOMContentLoaded', () => {
     Object.values(filters).forEach(select => select.addEventListener('change', applyFiltersAndRender));
     openTop5Btn.addEventListener('click', handleOpenTop5);
     queueForCrawlBtn.addEventListener('click', handleQueueForCrawl);
+    addCustomQueryBtn.addEventListener('click', handleAddCustomQuery);
     startCrawlBtn.addEventListener('click', handleStartCrawl);
     clearQueueBtn.addEventListener('click', handleClearQueue);
     clearLeadsBtn.addEventListener('click', handleClearLeads);
@@ -244,6 +248,8 @@ document.addEventListener('DOMContentLoaded', () => {
     saveSettingsBtn.disabled = isCrawling;
     domainBlacklistTextarea.disabled = isCrawling;
     crawlDepthSelect.disabled = isCrawling;
+    addCustomQueryBtn.disabled = isCrawling;
+    customQueryInput.disabled = isCrawling;
   }
 
   // --- HANDLER FUNCTIONS ---
@@ -273,6 +279,15 @@ document.addEventListener('DOMContentLoaded', () => {
     if (newTemplates.length > 0) {
       crawlQueue.push(...newTemplates);
       chrome.storage.local.set({ crawlQueue });
+    }
+  }
+
+  function handleAddCustomQuery() {
+    const queryText = customQueryInput.value.trim();
+    if (queryText && !crawlQueue.some(item => item.query === queryText)) {
+      crawlQueue.push({ query: queryText });
+      chrome.storage.local.set({ crawlQueue });
+      customQueryInput.value = '';
     }
   }
 
