@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let crawlQueue = [];
   let leads = [];
   let crawlStatus = "Idle";
+  let domainBlacklist = [];
 
   // --- DOM ELEMENTS ---
   const filters = {
@@ -17,6 +18,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const openTop5Btn = document.getElementById('open-top-5-btn');
   const queueForCrawlBtn = document.getElementById('queue-for-crawl-btn');
   
+  const domainBlacklistTextarea = document.getElementById('domain-blacklist');
+  const saveSettingsBtn = document.getElementById('save-settings-btn');
+
   const queueContainer = document.getElementById('queue-container');
   const queueCountSpan = document.getElementById('queue-count');
   const startCrawlBtn = document.getElementById('start-crawl-btn');
@@ -41,6 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
     applyFiltersAndRender();
     renderCrawlQueue();
     renderLeadsTable();
+    renderSettings();
     updateCrawlStatusUI();
 
     setupEventListeners();
@@ -58,9 +63,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function loadStateFromStorage() {
     return new Promise(resolve => {
-      chrome.storage.local.get({ crawlQueue: [], leads: [] }, (data) => {
+      chrome.storage.local.get({ crawlQueue: [], leads: [], domainBlacklist: [] }, (data) => {
         crawlQueue = data.crawlQueue || [];
         leads = data.leads || [];
+        domainBlacklist = data.domainBlacklist || [];
         resolve();
       });
     });
@@ -73,6 +79,7 @@ document.addEventListener('DOMContentLoaded', () => {
     startCrawlBtn.addEventListener('click', handleStartCrawl);
     clearQueueBtn.addEventListener('click', handleClearQueue);
     clearLeadsBtn.addEventListener('click', handleClearLeads);
+    saveSettingsBtn.addEventListener('click', handleSaveSettings);
     exportCsvBtn.addEventListener('click', () => handleExport('csv'));
     exportJsonBtn.addEventListener('click', () => handleExport('json'));
     exportTxtBtn.addEventListener('click', () => handleExport('txt'));
@@ -89,6 +96,10 @@ document.addEventListener('DOMContentLoaded', () => {
           crawlQueue = changes.crawlQueue.newValue || [];
           renderCrawlQueue();
         }
+        if (changes.domainBlacklist) {
+          domainBlacklist = changes.domainBlacklist.newValue || [];
+          renderSettings();
+        }
       }
     });
 
@@ -103,6 +114,10 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // --- RENDER FUNCTIONS ---
+  function renderSettings() {
+    domainBlacklistTextarea.value = domainBlacklist.join('\n');
+  }
+
   function populateFilters() {
     const unique = { sector: new Set(), role: new Set(), location: new Set(), platform: new Set() };
     allTemplates.forEach(t => {
@@ -217,9 +232,22 @@ document.addEventListener('DOMContentLoaded', () => {
     startCrawlBtn.disabled = crawlQueue.length === 0 && !isCrawling;
     clearQueueBtn.disabled = crawlQueue.length === 0 || isCrawling;
     clearLeadsBtn.disabled = leads.length === 0 || isCrawling;
+    saveSettingsBtn.disabled = isCrawling;
+    domainBlacklistTextarea.disabled = isCrawling;
   }
 
   // --- HANDLER FUNCTIONS ---
+  function handleSaveSettings() {
+    const domains = domainBlacklistTextarea.value.split('\n').map(d => d.trim()).filter(Boolean);
+    chrome.storage.local.set({ domainBlacklist: domains }, () => {
+      const originalText = saveSettingsBtn.textContent;
+      saveSettingsBtn.textContent = 'Saved!';
+      setTimeout(() => {
+        saveSettingsBtn.textContent = originalText;
+      }, 1500);
+    });
+  }
+
   function handleOpenTop5() {
     filteredTemplates.slice(0, 5).forEach(template => {
       const searchUrl = `https://www.google.com/search?q=${encodeURIComponent(template.query)}`;

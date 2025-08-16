@@ -59,9 +59,24 @@ function injectSerpParser(tabId) {
       moveToNextQuery();
       return;
     }
-    currentLinks = injectionResults[0].result || [];
-    currentLinkIndex = 0;
-    processLinks();
+    const links = injectionResults[0].result || [];
+    
+    chrome.storage.local.get({ domainBlacklist: [] }, (data) => {
+      const blacklist = data.domainBlacklist || [];
+      const filteredLinks = links.filter(link => {
+        try {
+          const url = new URL(link);
+          return !blacklist.some(blacklistedDomain => url.hostname.includes(blacklistedDomain));
+        } catch (e) {
+          return false; // Ignore invalid URLs
+        }
+      });
+      
+      console.log(`Found ${links.length} links, ${filteredLinks.length} after blacklist.`);
+      currentLinks = filteredLinks;
+      currentLinkIndex = 0;
+      processLinks();
+    });
   });
 }
 
