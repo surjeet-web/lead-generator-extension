@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -7,35 +8,75 @@ import { Separator } from "@/components/ui/separator";
 import { Lead, Template } from "@/types";
 import { toCSV } from "@/lib/utils";
 import { toast } from "sonner";
-import { v4 as uuidv4 } from "uuid";
 
 interface LeadManagerProps {
   queue: Template[];
-  leads: Lead[];
-  onUpdateLeads: (leads: Lead[]) => void;
   onClearQueue: () => void;
 }
 
-export const LeadManager = ({ queue, leads, onUpdateLeads, onClearQueue }: LeadManagerProps) => {
-  
-  const handleStartCrawling = () => {
-    toast.info("Backend required for crawling", {
-      description: "This feature requires a backend to fetch and process web pages. You can add one using Supabase.",
-      action: {
-        label: "Learn More",
-        onClick: () => console.log("Learn more about adding a backend."),
-      },
-    });
-  };
+export const LeadManager = ({ queue, onClearQueue }: LeadManagerProps) => {
+  const [leads, setLeads] = useState<Lead[]>([]);
+  const [isCrawling, setIsCrawling] = useState(false);
 
-  const handleGenerateMocks = () => {
-    const mockLeads: Lead[] = [
-      { id: uuidv4(), email: "ceo@techcorp.com", score: 95, domain: "techcorp.com", sourceUrl: "https://techcorp.com/about", firstSeenAt: new Date().toLocaleDateString() },
-      { id: uuidv4(), email: "contact@startup.io", score: 82, domain: "startup.io", sourceUrl: "https://startup.io/contact", firstSeenAt: new Date().toLocaleDateString() },
-      { id: uuidv4(), email: "jane.doe@example.com", score: 75, domain: "example.com", sourceUrl: "https://example.com/team", firstSeenAt: new Date().toLocaleDateString() },
-    ];
-    onUpdateLeads([...leads, ...mockLeads]);
-    toast.success("Generated 3 mock leads.");
+  // Effect to load leads from storage and listen for updates
+  useEffect(() => {
+    const getLeads = () => {
+      chrome.storage.local.get({ leads: [] }, (data) => {
+        setLeads(data.leads.sort((a, b) => b.score - a.score));
+      });
+    };
+
+    getLeads(); // Initial load
+
+    const storageListener = (changes, area) => {
+      if (area === 'local' && changes.leads) {
+        getLeads(); // Reload on change
+      }
+    };
+
+    chrome.storage.onChanged.addListener(storageListener);
+
+    return () => {
+      chrome.storage.onChanged.removeListener(storageListener);
+    };
+  }, []);
+
+  const handleStartCrawling = async () => {
+    if (queue.length === 0) return;
+    setIsCrawling(true);
+    toast.info(`Starting crawl for ${queue.length} queries...`);
+
+    for (const template of queue) {
+      let searchUrl;
+      switch (template.platform.toLowerCase()) {
+        case 'google':
+          searchUrl = `https://www.google.com/search?q=${encodeURIComponent(template.query)}`;
+          break;
+        case 'bing':
+          searchUrl = `https://www.bing.com/search?q=${encodeURIComponent(template.query)}`;
+          break;
+        case 'linkedin':
+          searchUrl = `https://www.linkedin.com/search/results/all/?keywords=${encodeURIComponent(template.query)}`;
+          break;
+        default:
+          searchUrl = `https://www.google.com/search?q=${encodeURIComponent(template.query)}`;
+      }
+      
+      // Open a new tab for the search query
+      const tab = await chrome.tabs.create({ url: searchUrl, active: false });
+      
+      // Give the page a moment to load before closing
+      await new Promise(resolve => setTimeout(resolve, 5000)); 
+      
+      // The content script runs automatically, so we just close the tab
+      if (tab.id) {
+        await chrome.tabs.remove(tab.id);
+      }
+    }
+
+    setIsCrawling(false);
+    toast.success("Crawl finished!");
+    onClearQueue();
   };
 
   const handleExport = () => {
@@ -54,6 +95,13 @@ export const LeadManager = ({ queue, leads, onUpdateLeads, onClearQueue }: LeadM
     link.click();
     document.body.removeChild(link);
     toast.success("Leads exported successfully!");
+  };
+
+  const handleClearLeads = () => {
+    chrome.storage.local.set({ leads: [] }, () => {
+      setLeads([]);
+      toast.success("All leads have been cleared.");
+    });
   };
 
   return (
@@ -75,8 +123,10 @@ export const LeadManager = ({ queue, leads, onUpdateLeads, onClearQueue }: LeadM
           {queue.length > 3 && <p className="text-sm text-muted-foreground text-center">...and {queue.length - 3} more.</p>}
         </div>
         <div className="flex gap-4 mb-6">
-          <Button onClick={handleStartCrawling} disabled={queue.length === 0}>Start Crawling</Button>
-          <Button variant="outline" onClick={onClearQueue} disabled={queue.length === 0}>Clear Queue</Button>
+          <Button onClick={handleStartCrawling} disabled={queue.length === 0 || isCrawling}>
+            {isCrawling ? "Crawling..." : "Start Crawling"}
+          </Button>
+          <Button variant="outline" onClick={onClearQueue} disabled={queue.length === 0 || isCrawling}>Clear Queue</Button>
         </div>
 
         <Separator className="my-4" />
@@ -84,7 +134,7 @@ export const LeadManager = ({ queue, leads, onUpdateLeads, onClearQueue }: LeadM
         <div className="flex justify-between items-center mb-2">
           <h3 className="text-lg font-semibold">Extracted Leads ({leads.length})</h3>
           <div className="flex gap-4">
-            <Button variant="secondary" onClick={handleGenerateMocks}>Generate Mock Leads</Button>
+            <Button variant="destructive" onClick={handleClearLeads} disabled={leads.length === 0}>Clear Leads</Button>
             <Button onClick={handleExport} disabled={leads.length === 0}>Export to CSV</Button>
           </div>
         </div>
@@ -105,7 +155,7 @@ export const LeadManager = ({ queue, leads, onUpdateLeads, onClearQueue }: LeadM
                     <TableCell className="font-medium">{lead.email}</TableCell>
                     <TableCell>{lead.score}</TableCell>
                     <TableCell>{lead.domain}</TableCell>
-                    <TableCell><a href={lead.sourceUrl} target="_blank" rel="noopener noreferrer" className="underline hover:text-primary">{lead.sourceUrl}</a></TableCell>
+                    <TableCell><a href={lead.sourceUrl} target="_blank" rel="noopener noreferrer" className="underline hover:text-primary truncate max-w-[150px] block" title={lead.sourceUrl}>{lead.sourceUrl}</a></TableCell>
                   </TableRow>
                 ))
               ) : (
