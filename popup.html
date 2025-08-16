@@ -12,8 +12,10 @@
 
     <main>
       <section class="card">
-        <h2>Targeted Search</h2>
-        <p class="description">Use templates to find high-probability pages with contact info.</p>
+        <h2>Search</h2>
+        <p class="description">Build a list of search queries using templates or by adding your own.</p>
+        
+        <h3>Targeted Search</h3>
         <div class="filters">
           <div class="filter-group">
             <label for="sector-filter">Sector</label>
@@ -32,19 +34,12 @@
             <select id="platform-filter"></select>
           </div>
         </div>
-        <hr>
-        <h3>Top 5 Queries</h3>
-        <div id="queries-container" class="queries-container">
-        </div>
+        <div id="queries-container" class="queries-container"></div>
         <div class="actions">
-          <button id="open-top-5-btn">Open Top 5</button>
-          <button id="queue-for-crawl-btn" class="secondary">Queue for Crawl</button>
+          <button id="queue-for-crawl-btn">Add Top 5 to Queue</button>
         </div>
-      </section>
-
-      <section class="card">
-        <h2>Custom Search</h2>
-        <p class="description">Add a specific Google search query directly to the crawl queue.</p>
+        <hr>
+        <h3>Custom Search</h3>
         <div class="custom-search-container">
           <input type="text" id="custom-query-input" placeholder="e.g., &quot;SaaS companies in London&quot; contact email">
           <button id="add-custom-query-btn">Add to Queue</button>
@@ -52,8 +47,8 @@
       </section>
 
       <section class="card">
-        <h2>Lead Manager</h2>
-        <p class="description">Manage your crawl queue and export extracted leads.</p>
+        <h2>Crawl Control</h2>
+        <p class="description">Configure, manage, and run the crawl queue.</p>
         
         <h3>Settings</h3>
         <div class="filters">
@@ -89,9 +84,11 @@
             <div class="progress-bar-inner"></div>
           </div>
         </div>
-        <hr>
+      </section>
+
+      <section class="card">
         <div class="header-actions">
-          <h3>Extracted Leads (<span id="leads-count">0</span>)</h3>
+          <h2>Extracted Leads (<span id="leads-count">0</span>)</h2>
           <div class="actions">
             <button id="clear-leads-btn" class="danger outline">Clear</button>
             <button id="export-csv-btn">CSV</button>
