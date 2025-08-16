@@ -2,17 +2,25 @@
   "manifest_version": 3,
   "name": "Lead Generator",
   "version": "0.1.0",
-  "description": "A browser extension to find and manage leads from the web.",
-  "permissions": ["storage", "tabs", "scripting"],
-  "host_permissions": ["<all_urls>"],
-  "action": {
-    "default_popup": "popup.html",
-    "default_icon": "assets/icon128.png"
-  },
+  "description": "A Chrome extension to generate leads by crawling websites.",
+  "permissions": [
+    "storage",
+    "tabs",
+    "scripting"
+  ],
+  "host_permissions": [
+    "*://*/*"
+  ],
   "background": {
     "service_worker": "background.js"
   },
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "128": "assets/icon.png"
+    }
+  },
   "icons": {
-    "128": "assets/icon128.png"
+    "128": "assets/icon.png"
   }
 }
